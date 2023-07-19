@@ -39,7 +39,7 @@ export const insertData = (table: string, data: object) => {
       try {
          const query = `INSERT INTO ${table} SET ?`;
          const result: any = await promisePool.query(query, data);
-         resolve({ msg: 'insert:ok', insertId: result[0].insertId })
+         resolve({ msg: 'insert:ok', insertId: result[0].insertId, code: 1 })
       } catch (error: any) {
          reject(error.message)
       }
