@@ -96,4 +96,8 @@ Express + TS + MySql
 }
 ```
 
-#### 商品模块
+#### 支付模块
+
+##### H5支付-支付宝支付
+
+1.安装支付宝 SDK：npm install alipay-sdk
