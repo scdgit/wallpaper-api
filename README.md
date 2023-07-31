@@ -51,6 +51,7 @@ Express + TS + MySql
 {
   "msg": "注册成功",
   "insertId": 3,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJyb290IiwiaWF0IjoxNjkwMjY4NjcyfQ.rQ1Qnk63pIGBWwrN3NBrSsime5Chrek83OjkHjrfPSw",
   "code": 1
 }
 ```
@@ -79,6 +80,7 @@ Express + TS + MySql
   "uname": "xxx",
   "nickname": "aikun",
   "avaatr": "/avatar/default.png",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJyb290IiwiaWF0IjoxNjkwMjY4NjcyfQ.rQ1Qnk63pIGBWwrN3NBrSsime5Chrek83OjkHjrfPSw",
   "code": 1
 }
 ```
@@ -98,7 +100,7 @@ Express + TS + MySql
 | ---- | -------------- | -------- |
 | GET  | /user/userinfo | JSON     |
 
-请求头设置Token
+请求头设置Token([登录/注册]成功后获取)
 
 ```txt
 headers.authorization = `Bearer ${token}`
