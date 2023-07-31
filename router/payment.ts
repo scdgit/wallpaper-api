@@ -5,10 +5,12 @@ import axios from 'axios'
 // 创建注册页面路由
 const payment = express.Router()
 
+import { PAY_RETURN_URL } from '../config'
 import { alipaySdk } from '../utils/alipay'
+import { checkToken } from '../middleware/user'
 
 // 发起支付宝的h5支付
-payment.post('/h5', async (req, res) => {
+payment.post('/h5', checkToken, async (req, res) => {
    const { totalAmount } = req.body
    const orderId = uuidv4()
    const bizContent = {
@@ -21,13 +23,13 @@ payment.post('/h5', async (req, res) => {
    const result = alipaySdk.pageExec('alipay.trade.wap.pay', {
       method: 'GET',
       bizContent,
-      returnUrl: 'http://127.0.0.1:5173/#/subpackage/payment-res'
+      returnUrl: PAY_RETURN_URL
    })
    res.json({ url: result })
 })
 
 // 发起支付宝的当面付
-payment.post('/inPerson', (req, res) => {
+payment.post('/inPerson', checkToken, (req, res) => {
    const { totalAmount } = req.body
    const bizContent = {
       out_trade_no: uuidv4(), // 商户订单号,64个字符以内、可包含字母、数字、下划线,且不能重复
@@ -47,7 +49,7 @@ payment.post('/inPerson', (req, res) => {
 })
 
 // 解析支付订单状态
-payment.post('/queryOrder', async (req, res) => {
+payment.post('/queryOrder', checkToken, async (req, res) => {
    const { outTradeNo, tradeNo } = req.body
    const bizContent = { outTradeNo, tradeNo }
    const resultData = alipaySdk.pageExec('alipay.trade.query', {

@@ -20,7 +20,6 @@ export const selectDate = (sql: string): Promise<Array<UserTyle>> => {
    return new Promise(async (resolve, reject) => {
       try {
          const [rows] = await promisePool.query(sql)
-         console.log(rows)
          resolve((rows as Array<UserTyle>))
       } catch (error: any) {
          reject(error.message)
@@ -71,14 +70,14 @@ export const deleteData = (table: string, condition: string) => {
  * @param condition [STRING] 条件
  * @returns 是否修改成功 [BOOLEAN]
  */
-export const updateData = (table: string, data: object, condition: string) => {
+export const updateData = (table: string, data: object, condition: string): Promise<any> => {
    return new Promise(async (resolve, reject) => {
       try {
          const query = `UPDATE ${table} SET ? WHERE ${condition}`
          const result: any = await promisePool.query(query, data)
-         resolve(result[0].affectedRows > 0)
+         resolve(result[0].affectedRows)
       } catch (error: any) {
-         reject(error.message)
+         reject(error)
       }
    })
 }
