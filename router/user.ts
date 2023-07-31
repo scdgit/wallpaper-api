@@ -33,7 +33,6 @@ user.post('/login', async (req: any, res) => {
          res.json({ msg: '该用户未注册', code: 0 })
       }
    } catch (error) {
-      console.error(`LOGIN SELECT ERROR:${error}`)
       res.end(error)
    }
 })
@@ -71,7 +70,7 @@ user.get('/userinfo', checkToken, (req, res) => {
    selectDate(sql).then(searchRes => {
       res.json({ msg: '获取用户信息成功', ...searchRes[0], code: 1 })
    }).catch(err => {
-      res.json({ msg: '数据库未连接', code: 0 })
+      res.status(500).json({ msg: '服务器错误', code: 0 })
    })
 })
 
@@ -87,7 +86,6 @@ user.get('/integral', checkToken, (req, res) => {
          res.json({ msg: '未找到该用用户', code: 0 })
       }
    }).catch(err => {
-      console.error(err)
       res.status(500).json({ msg: '服务器错误', code: 0 })
    })
 })
@@ -101,7 +99,6 @@ user.post('/updateIntegral', checkToken, (req, res) => {
       if (updateRes >= 1) res.json({ msg: '积分添加成功', code: 1 })
       else res.status(400).json({ msg: '积分添加失败', code: 0 })
    }).catch((err) => {
-      console.error(err)
       res.status(500).json({ msg: '服务器错误', code: 0 })
    })
 })

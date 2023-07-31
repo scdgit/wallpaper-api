@@ -100,7 +100,7 @@ Express + TS + MySql
 | ---- | -------------- | -------- |
 | GET  | /user/userinfo | JSON     |
 
-请求头设置Token([登录/注册]成功后获取)
+请求头设置Token(登录/注册成功后获取)
 
 ```txt
 headers.authorization = `Bearer ${token}`
@@ -119,7 +119,10 @@ headers.authorization = `Bearer ${token}`
 ```json
 {
   "msg": "获取用户信息成功",
-  ...
+  "id": 1,
+  "uname": "xxx",
+  "nickname": "aikun",
+  "avaatr": "/avatar/default.png",
   "code": 1
 }
 ```

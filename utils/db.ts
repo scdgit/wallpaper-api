@@ -22,6 +22,7 @@ export const selectDate = (sql: string): Promise<Array<UserTyle>> => {
          const [rows] = await promisePool.query(sql)
          resolve((rows as Array<UserTyle>))
       } catch (error: any) {
+         console.error(error.message)
          reject(error.message)
       }
    })
@@ -33,13 +34,14 @@ export const selectDate = (sql: string): Promise<Array<UserTyle>> => {
  * @param data [OBJECT] 数据
  * @returns
  */
-export const insertData = (table: string, data: object) => {
+export const insertData = (table: string, data: object): Promise<any> => {
    return new Promise(async (resolve, reject) => {
       try {
          const query = `INSERT INTO ${table} SET ?`;
          const result: any = await promisePool.query(query, data);
          resolve({ msg: 'insert:ok', insertId: result[0].insertId, code: 1 })
       } catch (error: any) {
+         console.error(error.message)
          reject(error.message)
       }
    })
@@ -51,13 +53,14 @@ export const insertData = (table: string, data: object) => {
  * @param condition [STRING] 条件
  * @returns 是否删除成功 [BOOLEAN]
  */
-export const deleteData = (table: string, condition: string) => {
+export const deleteData = (table: string, condition: string): Promise<any> => {
    return new Promise(async (resolve, reject) => {
       try {
          const query = `DELETE FROM ${table} WHERE ${condition}`
          const result: any = await promisePool.query(query)
          resolve(result[0].affectedRows > 0)
       } catch (error: any) {
+         console.error(error.message)
          reject(error.message)
       }
    })
@@ -77,7 +80,8 @@ export const updateData = (table: string, data: object, condition: string): Prom
          const result: any = await promisePool.query(query, data)
          resolve(result[0].affectedRows)
       } catch (error: any) {
-         reject(error)
+         console.error(error.message)
+         reject(error.message)
       }
    })
 }
