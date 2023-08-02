@@ -66,8 +66,8 @@ Express + TS + MySql
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| uname | 用户名 | STRING |
-| password | 密码 | STRING |
+| uname | 用户名 | string |
+| password | 密码 | string |
 
 登陆成功
 
@@ -109,7 +109,7 @@ headers.authorization = `Bearer ${token}`
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| uId | 用户名 | NUMBER |
+| uId | 用户名 | number |
 
 查询成功
 
@@ -137,7 +137,7 @@ headers.authorization = `Bearer ${token}`
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| uId | 用户ID | NUMBER |
+| uId | 用户ID | number |
 
 获取成功
 
@@ -158,8 +158,8 @@ headers.authorization = `Bearer ${token}`
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| uId | 用户ID | NUMBER |
-| userIntegral | 积分 | NUMBER |
+| uId | 用户ID | number |
+| userIntegral | 积分 | number |
 
 更新成功
 
@@ -181,7 +181,7 @@ headers.authorization = `Bearer ${token}`
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| outTradeNo | 订单号 | STRING |
+| outTradeNo | 订单号 | string |
 
 查询结果
 
@@ -201,7 +201,7 @@ headers.authorization = `Bearer ${token}`
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| uId | 用户ID | NUMBER |
+| uId | 用户ID | number |
 
 查询结果
 
@@ -245,10 +245,10 @@ headers.authorization = `Bearer ${token}`
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| totalAmount | 订单金额 | STRING |
-| orderIntegral | 订单积分 | NUMBER |
-| uId | 用户ID | NUMBER |
-| orderTime | 下单时间戳 | NUMBER |
+| totalAmount | 订单金额 | string |
+| orderIntegral | 订单积分 | number |
+| uId | 用户ID | number |
+| orderTime | 下单时间戳 | number |
 
 成功返回结果
 
@@ -277,9 +277,9 @@ headers.authorization = `Bearer ${token}`
 请求参数
 | 参数名 | 含义 | 类型 |
 | ---- | ---------------- | -------- |
-| outTradeNo | 订单号 | STRING |
-| orderIntegral | 订单积分 | NUMBER |
-| uId | 用户ID | NUMBER |
+| outTradeNo | 订单号 | string |
+| orderIntegral | 订单积分 | number |
+| uId | 用户ID | number |
 
 成功的返回
 
