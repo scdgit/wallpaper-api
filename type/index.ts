@@ -2,7 +2,7 @@
 export interface UserTyle {
    id?: number
    uname: string
-   password: String
+   password?: String
    nickname: string
    avatar: string
    integral: number

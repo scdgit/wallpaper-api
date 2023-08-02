@@ -7,10 +7,11 @@ const payment = express.Router()
 
 import { PAY_RETURN_URL } from '../config'
 import { alipaySdk } from '../utils/alipay'
-import { checkToken } from '../middleware/user'
+import { checkParamsIsNull, checkToken } from '../middleware'
+import { insertData, selectDate, updateData } from '../utils/db'
 
 // 发起支付宝的h5支付
-payment.post('/h5', checkToken, async (req, res) => {
+payment.post('/h5', checkParamsIsNull, checkToken, async (req, res) => {
    const { totalAmount } = req.body
    const orderId = uuidv4()
    const bizContent = {
@@ -29,10 +30,11 @@ payment.post('/h5', checkToken, async (req, res) => {
 })
 
 // 发起支付宝的当面付
-payment.post('/inPerson', checkToken, (req, res) => {
-   const { totalAmount } = req.body
+payment.post('/inPerson', checkParamsIsNull, checkToken, (req, res) => {
+   const { totalAmount, orderIntegral, uId, orderTime } = req.body
+   const outTradeNo = uuidv4() // 订单号
    const bizContent = {
-      out_trade_no: uuidv4(), // 商户订单号,64个字符以内、可包含字母、数字、下划线,且不能重复
+      out_trade_no: outTradeNo, // 商户订单号,64个字符以内、可包含字母、数字、下划线,且不能重复
       total_amount: totalAmount, // 订单总金额，单位为元，精确到小数点后两位
       subject: '积分充值', // 订单标题
    }
@@ -41,17 +43,22 @@ payment.post('/inPerson', checkToken, (req, res) => {
       bizContent
    })
    axios.get(resultUrl).then(resultData => {
-      // 返回订单信息
-      res.json(resultData.data)
+      // 创建订单记录
+      insertData('orders', { outTradeNo, uId, totalAmount, orderIntegral, orderTime }).then(insertId => {
+         res.json({ ...resultData.data, msg: '订单创建成功', orderIntegral, uId, orderId: insertId })
+      }).catch(err => {
+         console.error(err)
+         res.status(400).json({ msg: '数据库订单生成失败', code: 0 })
+      })
    }).catch(err => {
       res.json({ msg: '订单创建失败', err })
    })
 })
 
 // 解析支付订单状态
-payment.post('/queryOrder', checkToken, async (req, res) => {
-   const { outTradeNo, tradeNo } = req.body
-   const bizContent = { outTradeNo, tradeNo }
+payment.post('/queryOrder', checkParamsIsNull, checkToken, async (req, res) => {
+   const { outTradeNo, orderIntegral, uId } = req.body
+   const bizContent = { outTradeNo }
    const resultData = alipaySdk.pageExec('alipay.trade.query', {
       method: 'GET',
       bizContent
@@ -70,7 +77,17 @@ payment.post('/queryOrder', checkToken, async (req, res) => {
                res.json({ msg: '未付款交易超时关闭，或支付完成后全额退款', code, status: trade_status })
                break
             case 'TRADE_SUCCESS':
-               res.json({ msg: '交易支付成功', queryData, code, status: trade_status })
+               // 修改数据库订单状态
+               try {
+                  await updateData('orders', { status: 1 }, `outTradeNo='${outTradeNo}'`)
+                  const oldTotalIntegral = await selectDate(`SELECT userIntegral FROM users WHERE id='${uId}'`)
+                  const newIntegral = orderIntegral + oldTotalIntegral[0].userIntegral
+                  await updateData('users', { userIntegral: newIntegral }, `id=${uId}`)
+                  res.json({ msg: '交易支付成功', queryData, code, status: trade_status })
+               } catch(err) {
+                  console.error(err)
+                  res.status(500).json({ msg: '服务器错误，请申请售后服务', code: 0 })
+               }
                break
             case 'TRADE_FINISHED':
                res.json({ msg: '交易结束，不可退款', code, status: trade_status })

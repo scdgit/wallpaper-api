@@ -16,11 +16,11 @@ const promisePool = pool.promise() // 将连接池转换成Promise风格的API
  * @param sql 查询的语句
  * @returns 
  */
-export const selectDate = (sql: string): Promise<Array<UserTyle>> => {
+export const selectDate = (sql: string): Promise<Array<any>> => {
    return new Promise(async (resolve, reject) => {
       try {
          const [rows] = await promisePool.query(sql)
-         resolve((rows as Array<UserTyle>))
+         resolve((rows) as Array<any>)
       } catch (error: any) {
          console.error(error.message)
          reject(error.message)
@@ -34,12 +34,12 @@ export const selectDate = (sql: string): Promise<Array<UserTyle>> => {
  * @param data [OBJECT] 数据
  * @returns
  */
-export const insertData = (table: string, data: object): Promise<any> => {
+export const insertData = (table: string, data: object): Promise<number | string> => {
    return new Promise(async (resolve, reject) => {
       try {
          const query = `INSERT INTO ${table} SET ?`;
          const result: any = await promisePool.query(query, data);
-         resolve({ msg: 'insert:ok', insertId: result[0].insertId, code: 1 })
+         resolve(result[0].insertId)
       } catch (error: any) {
          console.error(error.message)
          reject(error.message)

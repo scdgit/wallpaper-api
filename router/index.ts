@@ -10,9 +10,11 @@ interface RouterConf {
 // 路由配置
 import user from './user'
 import payment from './payment'
+import order from './order'
 const routerConf: Array<RouterConf> = [
    { path: '/user', router: user },
-   { path: '/payment', router: payment }
+   { path: '/payment', router: payment },
+   { path: '/order', router: order },
 ]
 
 function routes(app: Express) {
