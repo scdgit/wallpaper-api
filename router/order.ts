@@ -5,6 +5,7 @@ const order = express.Router()
 
 import { selectDate, insertData, updateData } from '../utils/db'
 import { checkParamsIsNull, checkToken } from '../middleware'
+import { validateOrderNumber } from '../utils/check'
 
 // 查询订单
 order.get('/orderInfo', checkParamsIsNull, checkToken, (req, res) => {
@@ -32,8 +33,33 @@ order.post('/userOrder', checkParamsIsNull, checkToken, (req, res) => {
 })
 
 // 新增异常订单[客户端申请订单异常]
-order.post('/errOrder', checkParamsIsNull, checkToken, (req, res) => {
-   
+order.post('/addErrOrder', checkParamsIsNull, checkToken, async (req, res) => {
+   const { outTradeNo } = req.body
+   if (!validateOrderNumber(outTradeNo)) return res.status(400).json({ msg: '输入的订单号有误', code: 0 })
+   const sql1 = `SELECT outTradeNo FROM err_order WHERE outTradeNo='${outTradeNo}'`
+   const errOrder = await selectDate(sql1)
+   if (errOrder.length > 0) return res.json({ msg: '不能重复提交申请', code: 0 })
+   const sql2 = `SELECT * FROM orders WHERE outTradeNo='${outTradeNo}'`
+   selectDate(sql2).then(async (selectRes) => {
+      if (selectRes.length === 1) {
+         if (selectRes[0].status === 1) return res.json({ msg: '该订单已完成，无法申请提交！', code: 0 })
+         delete selectRes[0].id
+         try {
+            // 新增错误订单进数据库
+            const insertId = await insertData('err_order', { ...selectRes[0] })
+            if (insertId) {
+               res.json({ msg: '申请成功', code: 1 })
+            } else {
+               res.status(500).json({ msg: '服务器错误，请稍后再试', code: 0 })
+            }
+         } catch (err) {
+            console.error(err)
+            res.status(500).json({ msg: '服务器错误，请稍后再试', code: 0 })
+         }
+      } else {
+         res.status(400).json({ msg: '该订单不存在，请检查订单号是否正确！', code: 0 })
+      }
+   })
 })
 
 export default order
