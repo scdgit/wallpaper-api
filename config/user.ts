@@ -1,4 +1,4 @@
-export const AVATAR_URL = 'http://x006.b.u8s.ru/img/avatar'
+export const AVATAR_URL = 'http://xxx.com/img/avatar'
 
 // 昵称
 export const NICKNAME = [
