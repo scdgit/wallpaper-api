@@ -4,7 +4,7 @@
 
 ```bash
 # 运行
-npm run dev
+npm run dev 或者 nodemon app.ts
 ```
 
 #### 接口配置
